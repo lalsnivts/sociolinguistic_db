@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*
+import datetime
+
 __author__ = "gisly"
 import openpyxl
 import os
@@ -25,7 +27,7 @@ class ExcelParser:
                 column_names_pair = line.strip().split('\t')
                 column_name_custom = column_names_pair[0]
                 column_name_normalized = column_names_pair[1]
-                self.column_correspondences[column_name_custom] = column_name_normalized
+                self.column_correspondences[column_name_custom.lower()] = column_name_normalized
                 self.column_names.append(column_name_normalized)
 
 
@@ -81,12 +83,19 @@ class ExcelParser:
         else:
             object_parsed = dict()
         is_empty_row = True
+        # saving the previous value for merged cells
+        previous_value = None
         for column_index, cell in enumerate(row):
             if column_index >= self.total_column_num:
                 break
             column_name = self.columns_parsed[worksheet_index][column_index]
-            normalized_name = self.column_correspondences.get(column_name)
+            normalized_name = self.column_correspondences.get(str(column_name).lower())
             normalized_value = self.normalize_value(normalized_name, cell.value)
+            #if the cell is merged and its own value is empty, we should copy the previous cell
+            if type(cell).__name__ == 'MergedCell' \
+                    and (normalized_value is None or normalized_value == ''):
+                normalized_value = previous_value
+            previous_value = normalized_value
             if normalized_name:
                 object_parsed[normalized_name] = normalized_value
             if cell.value is not None:
@@ -100,6 +109,8 @@ class ExcelParser:
         if column_value is None:
             return ''
         if type(column_value) == int:
+            return column_value
+        elif type(column_value) == datetime.datetime:
             return column_value
         return column_value.strip().replace('\t', ' ')
 
@@ -120,4 +131,5 @@ class ExcelParser:
 
 excel_parser = ExcelParser('settings.ini')
 
-excel_parser.convert_excel_to_csv('D://Expeds/Exped2019/Socio/ankety_2019_Tugur.xlsx', 'test.csv')
+excel_parser.convert_excel_to_csv('D://Expeds\/ExpedIssues/Ankety_All/anketi_maduika_2006 (version 3).xlsx',
+                                  'test.csv')
