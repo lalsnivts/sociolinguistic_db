@@ -87,7 +87,7 @@ class ExcelParserFrom2016To2019(ExcelParser):
         for column_index, cell in enumerate(row):
             if column_index >= self.total_column_num:
                 break
-            column_name = self.columns_parsed[worksheet_index][column_index]
+            column_name = self.columns_parsed[worksheet_index][column_index].lower()
             if column_index == 0:
                 fio_custom = self.column_correspondences.get(column_name)
                 fio_current = self.normalize_value(fio_custom, cell.value)
