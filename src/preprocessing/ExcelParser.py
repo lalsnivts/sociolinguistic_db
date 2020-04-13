@@ -110,6 +110,8 @@ class ExcelParser:
             return ''
         if type(column_value) == int:
             return column_value
+        if type(column_value) == float:
+            return column_value
         elif type(column_value) == datetime.datetime:
             return column_value
         return column_value.strip().replace('\t', ' ')
@@ -128,8 +130,3 @@ class ExcelParser:
         for column_name in self.column_names:
             line_csv += str(object_parsed.get(column_name, '')) + self.COLUMN_SEPARATOR
         return line_csv.strip()
-
-excel_parser = ExcelParser('settings.ini')
-
-excel_parser.convert_excel_to_csv('D://Expeds\/ExpedIssues/Ankety_All/anketi_maduika_2006 (version 3).xlsx',
-                                  'test.csv')
