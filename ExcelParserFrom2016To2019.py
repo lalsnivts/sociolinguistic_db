@@ -2,6 +2,7 @@ import datetime
 import openpyxl
 import os
 import re
+import sys
 from datetime import datetime
 
 from src.preprocessing.ExcelParser import ExcelParser
@@ -169,6 +170,11 @@ class ExcelParserFrom2016To2019(ExcelParser):
         return line_csv.strip()
 
 
-excel_parser = ExcelParserFrom2016To2019('settings.ini')
+def main():
+    excel_parser = ExcelParserFrom2016To2019(sys.argv[1])
+    for arg in sys.argv[2:]:
+        excel_parser.convert_excel_to_csv(arg)
 
-excel_parser.convert_excel_to_csv('D://Expeds//ExpedIssues//Ankety_All//ankety_2016_yerbogachen_kachug.xlsx')
+
+if __name__ == '__main__':
+    main()
