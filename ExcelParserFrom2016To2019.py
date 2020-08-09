@@ -1,9 +1,8 @@
-import datetime
 import openpyxl
 import os
 import re
+
 import sys
-from datetime import datetime
 
 from src.preprocessing.ExcelParser import ExcelParser
 
@@ -73,12 +72,12 @@ class ExcelParserFrom2016To2019(ExcelParser):
                 if is_empty_row:
                     break
             elif not self.is_normal_worksheet(sheetname) and worksheet_index != self.worksheet_num:
-                self.process_specific_worksheet(worksheet_index, row)
+                self.process_specific_worksheet(sheetname, worksheet_index, row, row_index)
             else:
                 self.process_period_worksheet(worksheet_index, row)
         self.objects_parsed_worksheet[worksheet_index] = self.objects_parsed
 
-    def process_specific_worksheet(self, worksheet_index, row):
+    def process_specific_worksheet(self, sheetname, worksheet_index, row, row_index):
         fio_custom = ''
         fio_current = ''
         lang_custom = ''
@@ -171,10 +170,13 @@ class ExcelParserFrom2016To2019(ExcelParser):
 
 
 def main():
+    if len(sys.argv) < 2:
+        print('usage: ExcelParserFrom2016To2019 <settings.ini> <filename...>')
     excel_parser = ExcelParserFrom2016To2019(sys.argv[1])
-    for arg in sys.argv[2:]:
-        excel_parser.convert_excel_to_csv(arg)
+    excel_parser.parse_excel(sys.argv[2])
 
 
 if __name__ == '__main__':
     main()
+
+
