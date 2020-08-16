@@ -32,7 +32,7 @@ class ExcelParserFrom2016To2019(ExcelParser):
             column_name = cell.value
             if column_name is None:
                 continue
-            column_name = self.normalize_text(column_name)
+            column_name = self.normalize_text(column_name).strip()
             column_name_worksheet.append(column_name)
             if not self.is_normal_worksheet(sheetname):
                 self.column_names_specific_dict[column_index] = column_name
@@ -49,6 +49,7 @@ class ExcelParserFrom2016To2019(ExcelParser):
             column_corresp_worksheet.append('Languages')
         self.columns_parsed.append(column_name_worksheet)
         self.column_corresp_worksheet[worksheet_index] = column_corresp_worksheet
+        print(unknown_column_names)
 
     def convert_excel_to_csv(self, filename_in, filename_out=''):
         self.parse_excel(filename_in)
@@ -173,7 +174,8 @@ def main():
     if len(sys.argv) < 2:
         print('usage: ExcelParserFrom2016To2019 <settings.ini> <filename...>')
     excel_parser = ExcelParserFrom2016To2019(sys.argv[1])
-    excel_parser.parse_excel(sys.argv[2])
+    excel_parser.convert_excel_to_csv(sys.argv[2])
+
 
 
 if __name__ == '__main__':
