@@ -70,7 +70,7 @@ class ExcelParser:
                 continue
             column_name_worksheet.append(column_name)
             self.total_column_num += 1
-            column_correspondence = self.column_correspondences.get(column_name)
+            column_correspondence = self.column_correspondences.get(column_name.lower())
             if column_correspondence is None:
                 unknown_column_names.append(column_name)
         self.columns_parsed.append(column_name_worksheet)

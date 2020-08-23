@@ -17,7 +17,8 @@ class ExcelParserFrom2016To2019(ExcelParser):
     SPECIFIC_WORKSHEET_NAMES = ["Вопросы",
                                 "Владение языками",
                                 "Уровень владения",
-                                "Периоды жизни"]
+                                "Периоды жизни",
+                                "Утверждения"]
 
     def normalize_text(self, text):
         number = re.compile(r'\d{1,2}\. ')
@@ -98,7 +99,7 @@ class ExcelParserFrom2016To2019(ExcelParser):
             elif column_index > 1 and cell.value is not None:
                 normalized_name = self.column_correspondences.get(column_name)
                 normalized_value = self.normalize_value(normalized_name, cell.value)
-                if ',' in normalized_value:
+                if ',' in str(normalized_value):
                     normalized_value = normalized_value.replace(',', ';')
                 object_parsed[column_index] = dict()
                 object_parsed[column_index][fio_custom] = fio_current
@@ -123,9 +124,9 @@ class ExcelParserFrom2016To2019(ExcelParser):
                 fio_custom = self.column_correspondences.get(column_name)
                 fio_current = self.normalize_value(fio_custom, cell.value)
             elif column_index > 0 and cell.value is not None:
-                normalized_name = self.column_correspondences.get(column_name)
+                normalized_name = self.column_correspondences.get(column_name.lower())
                 normalized_value = self.normalize_value(normalized_name, cell.value)
-                if ',' in normalized_value:
+                if ',' in str(normalized_value):
                     normalized_value = normalized_value.replace(',', ';')
                 object_parsed[column_index] = dict()
                 object_parsed[column_index][fio_custom] = fio_current
@@ -141,7 +142,6 @@ class ExcelParserFrom2016To2019(ExcelParser):
         for worksheet_index, sheetname in enumerate(wb.sheetnames):
             sheetname = self.normalize_text(sheetname)
             filename_out = self.prepare_filename_out(filename_in, sheetname)
-            print(filename_out)
             with open(filename_out, 'w', encoding='utf-8', newline='') as fout:
                 fout.write(self.create_csv_headers_idx(worksheet_index) + self.LINE_SEPARATOR)
                 for object_parsed in self.objects_parsed_worksheet[worksheet_index]:
