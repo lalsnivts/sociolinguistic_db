@@ -5,6 +5,22 @@ import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 import random
 
+'''
+Запрос к базе данных, возвращающий пары "ребёнок - родитель"
+
+SELECT child.id, child.surname, child.first_name, 
+parent.id, parent.surname, parent.first_name,
+relation."name"
+FROM sociolinguistic_person child, 
+sociolinguistic_person parent, 
+sociolinguistic_personrelation person_relation,
+sociolinguistic_relation relation
+	WHERE person_relation.person1_id = child.id
+	AND person_relation.person2_id = parent.id
+	AND (person_relation.relation_id = 26 or person_relation.relation_id = 27)
+	AND relation.id = person_relation.relation_id 
+'''
+
 
 class GeneologyTree:
     def __init__(self):
